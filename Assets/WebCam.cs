@@ -22,6 +22,7 @@ public class WebCam : MonoBehaviour {
         PlayPauseButton = GameObject.Find("Play / Pause Cam").GetComponent<Button>();
         PlayPauseButtonText = PlayPauseButton.transform.Find("Text").GetComponent<Text>();
         PlayPauseButton.onClick.AddListener(PlayPauseClicked);
+        PlayPauseButton.gameObject.SetActive(false);
     }
 
     public void StartStopClicked() {
@@ -30,11 +31,14 @@ public class WebCam : MonoBehaviour {
             webCam.Stop();
             webCam = null;
             StartStopButtonText.text = "Play";
+            PlayPauseButton.gameObject.SetActive(false);
         } else {
             webCam = new WebCamTexture(WebCamTexture.devices[0].name);
             display.texture = webCam;
             webCam.Play();
             StartStopButtonText.text = "Stop";
+            PlayPauseButton.gameObject.SetActive(true);
+            PlayPauseButtonText.text = "Pause";
         }
     }
 
@@ -47,7 +51,4 @@ public class WebCam : MonoBehaviour {
             PlayPauseButtonText.text = "Pause";
         }
     }
-
-
-
 }
