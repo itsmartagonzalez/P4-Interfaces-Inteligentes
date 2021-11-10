@@ -15,6 +15,7 @@ public class Micro : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         Mic = GameObject.Find("Audio Source").GetComponent<AudioSource>();
+        
         StartStopButton = GameObject.Find("Start / Stop Mic").GetComponent<Button>();
         StartStopButtonText = StartStopButton.transform.Find("Text").GetComponent<Text>();
         StartStopButton.onClick.AddListener(StartStopClicked);
