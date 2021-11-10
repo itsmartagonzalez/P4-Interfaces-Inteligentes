@@ -8,7 +8,9 @@ public class Micro : MonoBehaviour {
     Button StartStopButton;
     Button PlayButton;
     Text StartStopButtonText;
+    Text PlayButtonText;
     private IEnumerator coroutine;
+    float startRecordingTime, stopRecordingTime;
 
     // Start is called before the first frame update
     void Start() {
@@ -18,6 +20,7 @@ public class Micro : MonoBehaviour {
         StartStopButton.onClick.AddListener(StartStopClicked);
 
         PlayButton = GameObject.Find("Play Mic").GetComponent<Button>();
+        PlayButtonText = PlayButton.transform.Find("Text").GetComponent<Text>();
         PlayButton.onClick.AddListener(PlayClicked);
         PlayButton.gameObject.SetActive(false);
     }
@@ -25,10 +28,12 @@ public class Micro : MonoBehaviour {
     public void StartStopClicked() {
         string microName = Microphone.devices[0];
         if (Microphone.IsRecording(microName)) {
+            stopRecordingTime = Time.time;
             Microphone.End(microName);
             StartStopButtonText.text = "Start Recording";
             PlayButton.gameObject.SetActive(true);
         } else {
+            startRecordingTime = Time.time;
             Mic.clip = Microphone.Start(microName, true, 10, 44100);
             StartStopButtonText.text = "Stop Recording";
             PlayButton.gameObject.SetActive(false);
@@ -36,6 +41,13 @@ public class Micro : MonoBehaviour {
     }
 
     public void PlayClicked() {
-        Mic.Play();        
+        Mic.Play();
+        StartCoroutine(PlayingText());
+    }
+
+    IEnumerator PlayingText() {
+        PlayButtonText.text = "Playing"; 
+        yield return new WaitForSeconds(stopRecordingTime - startRecordingTime);
+        PlayButtonText.text = "Play"; 
     }
 }
