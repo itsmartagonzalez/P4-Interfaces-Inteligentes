@@ -11,6 +11,8 @@ public class WebCam : MonoBehaviour {
     Button PlayPauseButton;
     Text StartStopButtonText;
     Text PlayPauseButtonText;
+    List<Texture> stories = new List<Texture>();
+    int storyCounter;
 
     // Start is called before the first frame update
     void Start() {
@@ -32,13 +34,9 @@ public class WebCam : MonoBehaviour {
             webCam = null;
             StartStopButtonText.text = "Play";
             PlayPauseButton.gameObject.SetActive(false);
+            showStories();
         } else {
-            webCam = new WebCamTexture(WebCamTexture.devices[0].name);
-            display.texture = webCam;
-            webCam.Play();
-            StartStopButtonText.text = "Stop";
-            PlayPauseButton.gameObject.SetActive(true);
-            PlayPauseButtonText.text = "Pause";
+            StartCoroutine(PlayFor10Seconds());
         }
     }
 
@@ -50,5 +48,23 @@ public class WebCam : MonoBehaviour {
             webCam.Play();
             PlayPauseButtonText.text = "Pause";
         }
+    }
+
+    IEnumerator PlayFor10Seconds() {
+        webCam = new WebCamTexture(WebCamTexture.devices[0].name);
+        display.texture = webCam;
+        webCam.Play();
+        StartStopButtonText.text = "Stop";
+        PlayPauseButton.gameObject.SetActive(true);
+        PlayPauseButtonText.text = "Pause";
+        yield return new WaitForSeconds(10);
+        stories.Add(display.texture);
+        display.texture = null;
+        webCam = null;
+        PlayFor10Seconds();
+    }
+
+    public void showStories() {
+        display.texture = stories.ElementAt(0);
     }
 }
